@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const hankenGrotesk = Hanken_Grotesk({
@@ -24,7 +25,7 @@ export default function RootLayout({
       className={`${hankenGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-surface text-on-surface font-hanken">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
