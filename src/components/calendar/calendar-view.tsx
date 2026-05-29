@@ -10,8 +10,8 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: CalendarViewProps) {
-  // Start calendar view on October 2023 to match user mockup, but enable standard navigation!
-  const [currentDate, setCurrentDate] = useState<Date>(new Date(2023, 9, 1));
+  // Start calendar view on current date and month dynamically!
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
 
   const year = currentDate.getFullYear();
@@ -108,9 +108,11 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
     }
   }
 
-  // Oct 7, 2023 is the "today" highlighted date in user mockup
-  const isMockToday = (dateString: string) => {
-    return dateString === "2023-10-07";
+  // Highlights today's actual date dynamically in the calendar grid
+  const isActualToday = (dateString: string) => {
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    return dateString === todayStr;
   };
 
   // Helper to map tasks to their noteType styling classes inside calendar cell
@@ -200,7 +202,7 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
           {gridCells.map((cell, idx) => {
             // Find tasks matching date
             const dayTasks = tasks.filter((t) => t.dueDate === cell.dateString);
-            const isToday = isMockToday(cell.dateString);
+            const isToday = isActualToday(cell.dateString);
             
             return (
               <div
