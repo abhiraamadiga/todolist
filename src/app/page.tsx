@@ -13,7 +13,7 @@ import { Button } from "../components/ui/button";
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [activeView, setActiveView] = useState<"board" | "calendar">("calendar"); // default to calendar to showcase mockup!
+  const [activeView, setActiveView] = useState<"board" | "calendar">("board"); // default to board (list view) on reload!
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
