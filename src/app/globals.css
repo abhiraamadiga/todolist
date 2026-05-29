@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@theme {
+  /* Surface colors */
+  --color-surface: #fcf9f4;
+  --color-surface-dim: #dcdad5;
+  --color-surface-bright: #fcf9f4;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3ee;
+  --color-surface-container: #f0ede8;
+  --color-surface-container-high: #ebe8e3;
+  --color-surface-container-highest: #e5e2dd;
+  --color-on-surface: #1c1c19;
+  --color-on-surface-variant: #5b403d;
+  --color-inverse-surface: #31302d;
+  --color-inverse-on-surface: #f3f0eb;
+  --color-outline: #8f6f6c;
+  --color-outline-variant: #e4beba;
+
+  /* Primary, Secondary, Tertiary */
+  --color-primary: #af101a;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #d32f2f;
+  --color-on-primary-container: #fff2f0;
+
+  --color-secondary: #4c616c;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #cfe6f2;
+  --color-on-secondary-container: #526772;
+
+  --color-tertiary: #005f7b;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #00799c;
+  --color-on-tertiary-container: #e9f7ff;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+
+  /* Pastel Notes Metaphor (Sticky Notes) */
+  --color-note-neutral: #ffffff;
+  --color-note-idea: #fefcbf; /* Warm sticky yellow */
+  --color-note-process: #e0f2fe; /* Calm process blue */
+  --color-note-success: #dcfce7; /* Done green */
+  --color-note-warning: #fee2e2; /* Red alert note */
+
+  /* Typography */
+  --font-hanken: var(--font-hanken-grotesk), sans-serif;
+
+  /* Elevation (Soft Ambient Shadows) */
+  --shadow-ambient: 0px 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-ambient-hover: 0px 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-pin: 0px 2px 4px rgba(175, 16, 26, 0.2);
+
+  /* Rounded Corners */
+  --radius-sm: 0.125rem;
+  --radius-default: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+:root {
+  --background: #fcf9f4;
+  --foreground: #1c1c19;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-hanken-grotesk), sans-serif;
+  margin: 0;
+}
+
+/* Custom interactive effects for our tactile elements */
+.paper-card {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(76, 97, 108, 0.08);
+}
+
+.paper-card:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: var(--shadow-ambient-hover);
+}
+
+/* A hand-drawn aesthetic checkbox */
+.custom-checkbox {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #4c616c;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  background-color: transparent;
+}
+
+.custom-checkbox:checked {
+  background-color: #4c616c;
+  border-color: #4c616c;
+}
+
+.custom-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Pushpin Visual Element */
+.pushpin {
+  width: 10px;
+  height: 10px;
+  background-color: #af101a;
+  border-radius: 50%;
+  box-shadow: var(--shadow-pin);
+  position: relative;
+}
+
+.pushpin::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+}
+
+/* Dotted cork desk paper layout */
+.desk-paper-grid {
+  background-color: #fcf9f4;
+  background-image: radial-gradient(#dcdad5 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* Custom Calendar Grid & Transitions */
+.calendar-grid {
+  border-collapse: collapse;
+}
+
+.calendar-cell {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: 1px solid #e4beba; /* cork terracotta border tint */
+  min-height: 120px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.calendar-cell:hover {
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 10;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Reusable Floating Action Button */
+.fab-button {
+  box-shadow: 0px 8px 24px rgba(175, 16, 26, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fab-button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0px 12px 32px rgba(175, 16, 26, 0.35);
+}
+
+.fab-button:active {
+  transform: translateY(-1px) scale(0.98);
+}
