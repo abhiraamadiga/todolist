@@ -24,6 +24,7 @@ export default function Home() {
   const [formNoteType, setFormNoteType] = useState<NoteType>("neutral");
   const [formIsPinned, setFormIsPinned] = useState(false);
   const [formDueDate, setFormDueDate] = useState("");
+  const [formDueTime, setFormDueTime] = useState("");
 
   // Load tasks on mount
   useEffect(() => {
@@ -69,7 +70,8 @@ export default function Home() {
       formCategory,
       formNoteType,
       formIsPinned,
-      formDueDate
+      formDueDate,
+      formDueTime
     );
 
     updateTasks([task, ...tasks]);
@@ -81,6 +83,7 @@ export default function Home() {
     setFormNoteType("neutral");
     setFormIsPinned(false);
     setFormDueDate("");
+    setFormDueTime("");
     setIsFormOpen(false);
   };
 
@@ -163,6 +166,7 @@ export default function Home() {
         <CalendarView
           tasks={tasks}
           onToggleComplete={handleToggleComplete}
+          onDeleteTask={handleDeleteTask}
           onAddTaskClick={() => setIsFormOpen(true)}
         />
       )}
@@ -295,17 +299,33 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Form Input: Due Date */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-extrabold uppercase tracking-widest text-secondary/70">
-                  Target Due Date
-                </label>
-                <input
-                  type="date"
-                  value={formDueDate}
-                  onChange={(e) => setFormDueDate(e.target.value)}
-                  className="w-full bg-transparent border-b-2 border-secondary/20 pb-1.5 text-sm font-semibold outline-none cursor-pointer text-on-surface"
-                />
+              {/* Two Column Date & Time Selector */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Form Input: Due Date */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-extrabold uppercase tracking-widest text-secondary/70">
+                    Target Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formDueDate}
+                    onChange={(e) => setFormDueDate(e.target.value)}
+                    className="w-full bg-transparent border-b-2 border-secondary/20 pb-1.5 text-sm font-semibold outline-none cursor-pointer text-on-surface"
+                  />
+                </div>
+
+                {/* Form Input: Due Time */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] font-extrabold uppercase tracking-widest text-secondary/70">
+                    Due Time
+                  </label>
+                  <input
+                    type="time"
+                    value={formDueTime}
+                    onChange={(e) => setFormDueTime(e.target.value)}
+                    className="w-full bg-transparent border-b-2 border-secondary/20 pb-1.5 text-sm font-semibold outline-none cursor-pointer text-on-surface"
+                  />
+                </div>
               </div>
 
               {/* Pin Checkbox */}

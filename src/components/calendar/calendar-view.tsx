@@ -2,17 +2,30 @@
 
 import React, { useState } from "react";
 import { Task } from "../../types";
+import { TaskCard } from "../task/task-card";
+
+// Helper to format 24h time string (e.g. "14:30") to 12h format (e.g. "2:30 PM")
+function formatTime(timeStr?: string): string {
+  if (!timeStr) return "";
+  const [hoursStr, minutesStr] = timeStr.split(":");
+  const hours = parseInt(hoursStr, 10);
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+  return `${displayHours}:${minutesStr} ${ampm}`;
+}
 
 interface CalendarViewProps {
   tasks: Task[];
   onToggleComplete: (id: string) => void;
+  onDeleteTask?: (id: string) => void;
   onAddTaskClick?: () => void;
 }
 
-export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: CalendarViewProps) {
+export function CalendarView({ tasks, onToggleComplete, onDeleteTask, onAddTaskClick }: CalendarViewProps) {
   // Start calendar view on current date and month dynamically!
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -200,8 +213,17 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
         {/* Calendar grid cells */}
         <div className="grid grid-cols-7 flex-1 desk-paper-grid">
           {gridCells.map((cell, idx) => {
-            // Find tasks matching date
-            const dayTasks = tasks.filter((t) => t.dueDate === cell.dateString);
+            // Find tasks matching date and sort them chronologically by dueTime
+            const dayTasks = tasks
+              .filter((t) => t.dueDate === cell.dateString)
+              .sort((a, b) => {
+                if (a.dueTime && b.dueTime) {
+                  return a.dueTime.localeCompare(b.dueTime);
+                }
+                if (a.dueTime) return -1;
+                if (b.dueTime) return 1;
+                return 0;
+              });
             const isToday = isActualToday(cell.dateString);
             
             return (
@@ -227,11 +249,11 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
                   {dayTasks.map((task) => (
                     <div
                       key={task.id}
-                      onClick={() => onToggleComplete(task.id)}
+                      onClick={() => setSelectedTask(task)}
                       className={`px-2 py-1.5 rounded border text-[10px] leading-tight font-semibold flex flex-col justify-between relative cursor-pointer paper-card transition-all ${getMiniNoteClasses(
                         task
                       )}`}
-                      title={`${task.title} - Click to toggle completion`}
+                      title={`${task.title} - Click to view details`}
                     >
                       {/* Red Pushed Pin anchor indicator */}
                       {task.isPinned && !task.completed && (
@@ -239,6 +261,12 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
                       )}
                       
                       <span className="truncate pr-1 mt-0.5">{task.title}</span>
+                      {task.dueTime && (
+                        <span className="text-[8px] opacity-75 mt-0.5 font-bold self-start bg-black/5 px-1 rounded flex items-center gap-0.5 select-none shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                          {formatTime(task.dueTime)}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -247,6 +275,56 @@ export function CalendarView({ tasks, onToggleComplete, onAddTaskClick }: Calend
           })}
         </div>
       </div>
+
+      {/* Task Detail Modal Overlay */}
+      {selectedTask && (
+        <div
+          className="fixed inset-0 bg-[#31302db3] backdrop-blur-[2px] z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedTask(null)}
+        >
+          <div
+            className="w-full max-w-sm relative animate-scale-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedTask(null)}
+              className="absolute -top-10 right-0 text-white/70 hover:text-white flex items-center gap-1.5 text-xs font-bold bg-black/25 px-3 py-1.5 rounded-full cursor-pointer hover:bg-black/40 transition-colors z-50"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Close
+            </button>
+
+            <TaskCard
+              {...selectedTask}
+              onToggleComplete={(id) => {
+                onToggleComplete(id);
+                setSelectedTask((prev) => (prev ? { ...prev, completed: !prev.completed } : null));
+              }}
+              onDelete={
+                onDeleteTask
+                  ? (id) => {
+                      onDeleteTask(id);
+                      setSelectedTask(null);
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

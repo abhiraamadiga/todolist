@@ -5,6 +5,7 @@ export interface Task {
   title: string;
   description?: string;
   dueDate?: string;
+  dueTime?: string;
   isPinned: boolean;
   completed: boolean;
   noteType: NoteType;

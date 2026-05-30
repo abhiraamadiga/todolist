@@ -9,6 +9,7 @@ export interface TaskCardProps {
   title: string;
   description?: string;
   dueDate?: string;
+  dueTime?: string;
   isPinned?: boolean;
   completed?: boolean;
   noteType?: NoteType;
@@ -17,11 +18,22 @@ export interface TaskCardProps {
   onDelete?: (id: string) => void;
 }
 
+// Helper to format 24h time string (e.g. "14:30") to 12h format (e.g. "2:30 PM")
+function formatTime(timeStr?: string): string {
+  if (!timeStr) return "";
+  const [hoursStr, minutesStr] = timeStr.split(":");
+  const hours = parseInt(hoursStr, 10);
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+  return `${displayHours}:${minutesStr} ${ampm}`;
+}
+
 export function TaskCard({
   id,
   title,
   description,
   dueDate,
+  dueTime,
   isPinned = false,
   completed = false,
   noteType = "neutral",
@@ -134,7 +146,7 @@ export function TaskCard({
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            {dueDate}
+            {dueDate} {dueTime && `at ${formatTime(dueTime)}`}
           </span>
         )}
       </div>

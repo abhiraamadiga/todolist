@@ -6,13 +6,15 @@ export function createNewTask(
   category: string,
   noteType: NoteType = "neutral",
   isPinned: boolean = false,
-  dueDate?: string
+  dueDate?: string,
+  dueTime?: string
 ): Task {
   return {
     id: Math.random().toString(36).substring(2, 11),
     title,
     description: description.trim() || undefined,
     dueDate: dueDate || undefined,
+    dueTime: dueTime || undefined,
     isPinned,
     completed: false,
     noteType,
