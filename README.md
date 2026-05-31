@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tactile Board — Modern Office To-Do List
 
-## Getting Started
+A premium, visually-rich, office-desk-themed task and goal organizer built with a clean tactile paper aesthetic. Designed to streamline daily workflows by pinning customized, context-colored task notes to an interactive desktop workspace.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Premium Tactile Design System
+
+The application mimics a physical office pinboard using modern design system tokens:
+* **Sticky Note Archetypes:** Customizable note backgrounds corresponding to task priorities and categories (Neutral, Process, Success, Warning, Idea).
+* **Workspace Pins:** Featured and pinned tasks physically display decorative pushpin indicators.
+* **Layout Transitions:** Micro-interactions, including hover state elevations and scaling modular frames, enhance overall engagement.
+* **Multi-View Desk:** Allows toggling between a responsive Task Board grid and a monthly Calendar Grid.
+
+---
+
+## Tech Stack and Architecture
+
+Built to satisfy modern enterprise frontend requirements:
+* **Framework:** Next.js 16 (App Router) & React 19.
+* **Type Safety:** TypeScript with comprehensive, error-free strict checking.
+* **Styling:** Tailwind CSS v4 utilizing HSL color definitions.
+* **State Management:** Redux Toolkit (RTK) for centralized UI filters and application views.
+* **Data Fetching:** RTK Query with tag-based cache invalidation for automated list refreshes on CRUD operations.
+* **Mock Backend:** JSON Server for lightweight API simulation.
+
+---
+
+## Key Features
+
+* **Full CRUD Operations:** Support for task creation, list fetching, status toggle, description updates, and deletion.
+* **Automated Refetching:** Automatic cache invalidation ensures the view refreshes instantly upon state changes.
+* **Category Sorting:** Sidebar sorting with live counters across defined categories (Work, Personal, Brainstorm, Completed).
+* **Deadline Schedulers:** Custom date and AM/PM time configurations for individual task deadlines.
+
+---
+
+## Directory Structure
+
+```text
+src/
+├── app/
+│   ├── globals.css      # Custom design tokens, transitions, and keyframes
+│   ├── layout.tsx       # Root layout wrapping global providers and typography
+│   ├── page.tsx         # Primary controller and task coordinator view
+│   └── providers.tsx    # Next.js Provider wrapper for Redux store
+├── components/
+│   ├── board/
+│   │   └── board.tsx    # Board grid display container
+│   ├── calendar/
+│   │   └── calendar-view.tsx # Monthly calendar tasks layout
+│   ├── sidebar/
+│   │   └── sidebar.tsx  # Dynamic sidebar filters and stats
+│   ├── task/
+│   │   └── task-card.tsx # Sticky note archetype component
+│   └── ui/
+│       └── button.tsx   # Typed reusable button elements
+├── features/
+│   ├── filter/
+│   │   └── filterSlice.ts # Redux slice for search & filter UI state
+│   ├── filters/
+│   │   └── index.ts     # Task sorting & metric helpers
+│   └── tasks/
+│       ├── index.ts     # Task factories and sorters
+│       └── taskApi.ts   # RTK Query slice (CRUD endpoint definitions)
+├── store/
+│   ├── hooks.ts         # Type-safe useSelector & useDispatch hooks
+│   └── store.ts         # Main store configuration
+└── types/
+    └── index.ts         # Domain types and custom interfaces
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation & Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Install Dependencies
+Clone the repository and install all required node packages:
+```bash
+npm install
+```
 
-## Learn More
+### 2. Start Database Mock Server
+Start the local JSON Server to mock the backend endpoints:
+```bash
+npx json-server --port 3001 --watch db.json
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run Development Server
+Start the Next.js local server:
+```bash
+npm run dev
+```
+Navigate to [http://localhost:3000](http://localhost:3000) to access the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Quality Assurance
 
-## Deploy on Vercel
+To verify strict static types across all features, run:
+```bash
+npx tsc --noEmit
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Author
+
+Designed and implemented by **Abhiraam Adiga**.
