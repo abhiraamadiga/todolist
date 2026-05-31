@@ -18,7 +18,7 @@ export const taskApi = createApi({
             ]
           : [{ type: "Task", id: "LIST" }],
     }),
-    createTask: builder.mutation<Task, Omit<Task, "id" | "createdAt">>({
+    createTask: builder.mutation<Task, Task>({
       query: (task) => ({
         url: "/tasks",
         method: "POST",

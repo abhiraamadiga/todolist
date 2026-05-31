@@ -1,20 +1,28 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Sidebar, FilterOption } from "../components/sidebar/sidebar";
 import { Board } from "../components/board/board";
 import { CalendarView } from "../components/calendar/calendar-view";
 import { Task, NoteType } from "../types";
-import { TaskService } from "../services";
 import { createNewTask } from "../features/tasks";
+import {
+  useGetTasksQuery,
+  useCreateTaskMutation,
+  useUpdateTaskMutation,
+  useDeleteTaskMutation,
+} from "../features/tasks/taskApi";
 import { filterTasks, calculateFilterCounts } from "../features/filters";
 import { Button } from "../components/ui/button";
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { data: tasks = [], isLoading, error } = useGetTasksQuery();
+  const [createTask] = useCreateTaskMutation();
+  const [updateTask] = useUpdateTaskMutation();
+  const [deleteTask] = useDeleteTaskMutation();
+
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [activeView, setActiveView] = useState<"board" | "calendar">("board"); // default to board (list view) on reload!
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
   // Form states
@@ -26,38 +34,16 @@ export default function Home() {
   const [formDueDate, setFormDueDate] = useState("");
   const [formDueTime, setFormDueTime] = useState("");
 
-  // Load tasks on mount
-  useEffect(() => {
-    async function loadTasks() {
-      try {
-        const loadedTasks = await TaskService.getAllTasks();
-        setTasks(loadedTasks);
-      } catch (err) {
-        console.error("Could not load tasks", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadTasks();
-  }, []);
-
-  // Save tasks on change
-  const updateTasks = async (newTasks: Task[]) => {
-    setTasks(newTasks);
-    await TaskService.saveTasks(newTasks);
-  };
-
   // Handlers
   const handleToggleComplete = (id: string) => {
-    const updated = tasks.map((task) =>
-      task.id === id ? { ...task, completed: !task.completed } : task
-    );
-    updateTasks(updated);
+    const task = tasks.find((t) => t.id === id);
+    if (task) {
+      updateTask({ id, completed: !task.completed });
+    }
   };
 
   const handleDeleteTask = (id: string) => {
-    const updated = tasks.filter((task) => task.id !== id);
-    updateTasks(updated);
+    deleteTask(id);
   };
 
   const handleAddTask = (e: React.FormEvent) => {
@@ -74,7 +60,7 @@ export default function Home() {
       formDueTime
     );
 
-    updateTasks([task, ...tasks]);
+    createTask(task);
     
     // Reset form
     setFormTitle("");
