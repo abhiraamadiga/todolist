@@ -14,6 +14,8 @@ import {
 } from "../features/tasks/taskApi";
 import { filterTasks, calculateFilterCounts } from "../features/filters";
 import { Button } from "../components/ui/button";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { setFilter } from "../features/filter/filterSlice";
 
 export default function Home() {
   const { data: tasks = [], isLoading, error } = useGetTasksQuery();
@@ -21,7 +23,9 @@ export default function Home() {
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTask] = useDeleteTaskMutation();
 
-  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const activeFilter = useAppSelector((state) => state.filter.filter);
+  const dispatch = useAppDispatch();
+  const setActiveFilter = (filter: string) => dispatch(setFilter(filter));
   const [activeView, setActiveView] = useState<"board" | "calendar">("board"); // default to board (list view) on reload!
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
